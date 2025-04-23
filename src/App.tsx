@@ -97,9 +97,12 @@ function App() {
       <div className="flex flex-col gap-2">
         {isLoading && "Loading.."}
         {data?.map(todo => (
-          <div key={todo.id} className="flex flex-col gap-1 border max-w-1/5 items-center">
-            <h3>{`${todo.id}, ${todo.title}`}</h3>
-            <p>{todo.description || "No description"}</p>
+          <div key={todo.id} className="flex flex-col gap-1 border w-1/5 oveflow-scroll items-center">
+            <span>id: {todo.id}</span>
+            <span>title: {todo.title}</span>
+            <span>created_at: {new Date(todo.created_at).toString()}</span>
+            <span>description: {todo.description}</span>
+            <span>completed: {todo.completed.toString()}</span>
             {updatingId === todo.id ? (
               <Loader />
             ) : (
