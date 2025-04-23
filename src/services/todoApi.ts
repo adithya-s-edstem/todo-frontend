@@ -106,7 +106,22 @@ export const todoApi = createApi({
         url: '/delete/all',
         method: 'DELETE'
       }),
-      invalidatesTags: ['Todos']
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          todoApi.util.updateQueryData(
+            'getAllTodos',
+            undefined,
+            (draft) => {
+              draft.splice(0)
+            }
+          )
+        )
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo();
+        }
+      }
     })
   })
 })
