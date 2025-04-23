@@ -3,6 +3,7 @@ import { FormAction, FormState } from "../types";
 import { useAddTodoMutation } from "../services/todoApi";
 import Button from "./Button";
 import TextInput from "./TextInput";
+import TextArea from "./TextArea";
 
 function TodoForm() {
   const [addingTodo, setAddingTodo] = useState<boolean>(false);
@@ -48,17 +49,15 @@ function TodoForm() {
         e.preventDefault()
         handleAddTodo()
       }}
-      className="flex flex-row gap-2"
+      className="flex flex-col gap-2 w-1/3"
     >
       <TextInput
-        type="text"
         placeholder="Title"
         value={formState.title}
         onChange={(value) => formDispatch({ type: "SET_TITLE", payload: value })}
         disabled={addingTodo}
       />
-      <TextInput
-        type="text"
+      <TextArea
         placeholder="Description"
         value={formState.description || ""}
         onChange={(value) => formDispatch({ type: "SET_DESCRIPTION", payload: value })}

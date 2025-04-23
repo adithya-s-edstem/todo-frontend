@@ -5,17 +5,16 @@ type TextInputProps = {
   disabled?: boolean
 }
 
-function TextInput({ value, onChange, placeholder, disabled }: TextInputProps) {
+function TextArea({ value, onChange, placeholder, disabled }: TextInputProps) {
   return (
-    <input
-      type="text"
+    <textarea
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className={`border h-10 rounded-md p-4 focus:outline-blue-300 ${disabled ? "bg-gray-100 text-gray-500 select-none" : ""}`}
+      className={`border min-h-40 rounded-md p-4 focus:outline-blue-300 ${disabled ? "bg-gray-100 text-gray-500 select-none" : ""}`}
       disabled={disabled}
     />
   )
 }
 
-export default TextInput;
+export default TextArea;
