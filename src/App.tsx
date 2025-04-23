@@ -100,9 +100,9 @@ function App() {
           <div key={todo.id} className="flex flex-col gap-1 border w-1/5 oveflow-scroll items-center">
             <span>id: {todo.id}</span>
             <span>title: {todo.title}</span>
-            <span>created_at: {new Date(todo.created_at).toString()}</span>
+            <span>created_at: {new Date(todo.created_at)?.toString()}</span>
             <span>description: {todo.description}</span>
-            <span>completed: {todo.completed.toString()}</span>
+            <span>completed: {todo.completed?.toString()}</span>
             {updatingId === todo.id ? (
               <Loader />
             ) : (
