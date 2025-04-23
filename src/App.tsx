@@ -1,36 +1,16 @@
-import { useReducer, useState } from "react";
-import { useAddTodoMutation, useDeleteAllTodosMutation, useDeleteTodoMutation, useGetAllTodosQuery, useUpdateTodoMutation } from "./services/todoApi";
-import { FormAction, FormState, Todo } from "./types";
+import { useState } from "react";
+import { useDeleteAllTodosMutation, useDeleteTodoMutation, useGetAllTodosQuery, useUpdateTodoMutation } from "./services/todoApi";
+import { Todo } from "./types";
+import TodoForm from "./components/TodoForm";
 
 function App() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
-  const [addingTodo, setAddingTodo] = useState<boolean>(false);
-
-  function formReducer(state: FormState, action: FormAction) {
-    switch (action.type) {
-      case 'SET_TITLE': {
-        return {
-          ...state,
-          title: action.payload
-        }
-      }
-      case 'SET_DESCRIPTION': {
-        return {
-          ...state,
-          description: action.payload
-        }
-      }
-    }
-  }
-
-  const [formState, formDispatch] = useReducer(formReducer, { title: "", description: "" })
 
   const { data, isLoading } = useGetAllTodosQuery();
 
   const [deleteTodo] = useDeleteTodoMutation();
   const [updateTodo] = useUpdateTodoMutation();
-  const [addTodo, { isSuccess }] = useAddTodoMutation();
   const [deleteAllTodos] = useDeleteAllTodosMutation();
 
   async function handleDelete(id: number) {
@@ -55,21 +35,6 @@ function App() {
     }
   }
 
-  async function handleAddTodo() {
-    setAddingTodo(true)
-    try {
-      await addTodo(formState).unwrap()
-    } catch (error) {
-      console.error("Failed to add todo: ", error)
-    } finally {
-      if (isSuccess) {
-        formDispatch({ type: "SET_TITLE", payload: '' })
-        formDispatch({ type: "SET_DESCRIPTION", payload: '' })
-      }
-      setAddingTodo(false)
-    }
-  }
-
   async function handleDeleteAll() {
     try {
       await deleteAllTodos().unwrap()
@@ -82,17 +47,7 @@ function App() {
 
   return (
     <div className="flex flex-col gap-4">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          handleAddTodo()
-        }}
-        className="flex flex-row gap-2"
-      >
-        <input type="text" placeholder="Title" value={formState.title} onChange={(e) => formDispatch({ type: "SET_TITLE", payload: e.target.value })} disabled={addingTodo} />
-        <input type="text" placeholder="Description" value={formState.description} onChange={(e) => formDispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })} disabled={addingTodo} />
-        <input type="submit" value="Add Todo" />
-      </form>
+      <TodoForm />
       <button onClick={handleDeleteAll}>Delete All</button>
       <div className="flex flex-col gap-2">
         {isLoading && "Loading.."}
