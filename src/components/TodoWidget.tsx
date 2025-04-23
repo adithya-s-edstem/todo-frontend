@@ -3,6 +3,7 @@ import { Todo } from "../types";
 import Loader from "./Loader";
 import { useDeleteTodoMutation, useUpdateTodoMutation } from "../services/todoApi";
 import Button from "./Button";
+import formatDate from "../utils/formatDate";
 
 type TodoProps = {
   todo: Todo
@@ -39,7 +40,7 @@ function TodoWidget({ todo }: TodoProps) {
       <div className="border font-mono p-1 flex flex-col gap-1">
         <span>id: {todo.id}</span>
         <span>title: {todo.title}</span>
-        <span>created_at: {new Date(todo.created_at)?.toString()}</span>
+        <span>created_at: {formatDate(todo.created_at)}</span>
         <span>description: {todo.description}</span>
         <span>completed: {todo.completed?.toString()}</span>
       </div>
