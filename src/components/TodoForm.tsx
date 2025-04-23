@@ -5,7 +5,11 @@ import Button from "./Button";
 import TextInput from "./TextInput";
 import TextArea from "./TextArea";
 
-function TodoForm() {
+type TodoFormProps = {
+  handleCancel: () => void
+}
+
+function TodoForm({ handleCancel }: TodoFormProps) {
   function formReducer(state: FormState, action: FormAction) {
     switch (action.type) {
       case 'SET_TITLE': {
@@ -61,7 +65,10 @@ function TodoForm() {
         disabled={isLoading}
         label="Description"
       />
-      <Button type="submit" label="Add Todo" busy={isLoading} />
+      <div className="flex items-center gap-4">
+        <Button type="submit" label="Add Todo" busy={isLoading} />
+        <Button type="button" label="Cancel" onClick={handleCancel} red />
+      </div>
     </form>
   )
 }

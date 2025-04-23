@@ -2,8 +2,11 @@ import { useDeleteAllTodosMutation, useGetAllTodosQuery } from "./services/todoA
 import TodoForm from "./components/TodoForm";
 import TodoWidget from "./components/TodoWidget";
 import Button from "./components/Button";
+import { useState } from "react";
 
 function App() {
+  const [addingTodo, setAddingTodo] = useState<boolean>(false);
+
   const { data, isLoading } = useGetAllTodosQuery();
 
   const [deleteAllTodos, { isLoading: isDeleting }] = useDeleteAllTodosMutation();
@@ -20,8 +23,13 @@ function App() {
 
   return (
     <div className="flex flex-col gap-4 min-h-screen p-4 text-sm">
-      <TodoForm />
-      <Button type="button" label="Delete All" onClick={handleDeleteAll} disabled={deleteAllDisabled} busy={isDeleting} red />
+      <div className="flex flex-col items-center gap-4">
+        {addingTodo
+          ? <TodoForm handleCancel={() => setAddingTodo(false)} />
+          : <Button type="button" label="New Todo" onClick={() => setAddingTodo(true)} />
+        }
+        <Button type="button" label="Delete All" onClick={handleDeleteAll} disabled={deleteAllDisabled} busy={isDeleting} red />
+      </div>
       <div className="grid grid-cols-4 gap-4">
         {isLoading && "Loading.."}
         {data?.map(todo => (

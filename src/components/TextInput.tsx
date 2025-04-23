@@ -15,7 +15,7 @@ function TextInput({ value, onChange, placeholder, disabled, label }: TextInputP
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`border h-10 rounded-md p-4 focus:outline-blue-300 ${disabled ? "bg-gray-100 text-gray-500 select-none" : ""}`}
+        className={`border border-gray-300 shadow h-10 rounded-md p-4 focus:outline-blue-300 ${disabled ? "bg-gray-100 text-gray-500 select-none" : ""}`}
         disabled={disabled}
       />
     </div>
