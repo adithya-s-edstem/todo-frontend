@@ -1,5 +1,5 @@
 import { useReducer, useState } from "react";
-import { useAddTodoMutation, useDeleteTodoMutation, useGetAllTodosQuery, useUpdateTodoMutation } from "./services/todoApi";
+import { useAddTodoMutation, useDeleteAllTodosMutation, useDeleteTodoMutation, useGetAllTodosQuery, useUpdateTodoMutation } from "./services/todoApi";
 import { FormAction, FormState, Todo } from "./types";
 
 function App() {
@@ -30,10 +30,8 @@ function App() {
 
   const [deleteTodo] = useDeleteTodoMutation();
   const [updateTodo] = useUpdateTodoMutation();
-  const [
-    addTodo,
-    // { isSuccess }
-  ] = useAddTodoMutation()
+  const [addTodo, { isSuccess }] = useAddTodoMutation();
+  const [deleteAllTodos] = useDeleteAllTodosMutation();
 
   async function handleDelete(id: number) {
     setDeletingId(id);
@@ -60,15 +58,23 @@ function App() {
   async function handleAddTodo() {
     setAddingTodo(true)
     try {
-      await addTodo(formState)
+      await addTodo(formState).unwrap()
     } catch (error) {
       console.error("Failed to add todo: ", error)
     } finally {
-      // if (isSuccess) {
-      //   formDispatch({ type: "SET_TITLE", payload: '' })
-      //   formDispatch({ type: "SET_DESCRIPTION", payload: '' })
-      // }
+      if (isSuccess) {
+        formDispatch({ type: "SET_TITLE", payload: '' })
+        formDispatch({ type: "SET_DESCRIPTION", payload: '' })
+      }
       setAddingTodo(false)
+    }
+  }
+
+  async function handleDeleteAll() {
+    try {
+      await deleteAllTodos().unwrap()
+    } catch (error) {
+      console.error("Failed to delete all todos: ", error)
     }
   }
 
@@ -87,6 +93,7 @@ function App() {
         <input type="text" placeholder="Description" value={formState.description} onChange={(e) => formDispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })} disabled={addingTodo} />
         <input type="submit" value="Add Todo" />
       </form>
+      <button onClick={handleDeleteAll}>Delete All</button>
       <div className="flex flex-col gap-2">
         {isLoading && "Loading.."}
         {data?.map(todo => (

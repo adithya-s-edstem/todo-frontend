@@ -100,8 +100,15 @@ export const todoApi = createApi({
           patchResult.undo();
         }
       }
+    }),
+    deleteAllTodos: build.mutation<void, void>({
+      query: () => ({
+        url: '/delete/all',
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['Todos']
     })
   })
 })
 
-export const { useGetAllTodosQuery, useDeleteTodoMutation, useUpdateTodoMutation, useAddTodoMutation } = todoApi
+export const { useGetAllTodosQuery, useDeleteTodoMutation, useUpdateTodoMutation, useAddTodoMutation, useDeleteAllTodosMutation } = todoApi
