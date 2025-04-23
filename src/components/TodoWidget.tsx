@@ -37,7 +37,7 @@ function TodoWidget({ todo }: TodoProps) {
 
   return (
     <div className="flex flex-col gap-1 shadow border border-gray-300 items-center p-2 rounded-md hover:shadow-xl transition">
-      <div className="overflow-auto w-full flex flex-col gap-1">
+      <div className="overflow-y-auto text-wrap break-all h-40 w-full flex flex-col gap-1 ">
         <span>id: {todo.id}</span>
         <span>title: {todo.title}</span>
         <span>created_at: {formatDate(todo.created_at)}</span>
