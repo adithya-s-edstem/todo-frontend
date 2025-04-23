@@ -37,13 +37,11 @@ function TodoWidget({ todo }: TodoProps) {
 
   return (
     <div className="flex flex-col gap-1 border-1 items-center p-2 rounded-md hover:shadow-xl transition">
-      <div className="border font-mono p-1 flex flex-col gap-1">
-        <span>id: {todo.id}</span>
-        <span>title: {todo.title}</span>
-        <span>created_at: {formatDate(todo.created_at)}</span>
-        <span>description: {todo.description}</span>
-        <span>completed: {todo.completed?.toString()}</span>
-      </div>
+      <span>id: {todo.id}</span>
+      <span>title: {todo.title}</span>
+      <span>created_at: {formatDate(todo.created_at)}</span>
+      <span>description: {todo.description}</span>
+      <span>completed: {todo.completed?.toString()}</span>
       <div className="flex justify-between items-center w-full">
         {isUpdating ? (
           <Loader />
