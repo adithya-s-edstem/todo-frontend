@@ -1,6 +1,8 @@
 import { useReducer, useState } from "react";
 import { FormAction, FormState } from "../types";
 import { useAddTodoMutation } from "../services/todoApi";
+import Button from "./Button";
+import TextInput from "./TextInput";
 
 function TodoForm() {
   const [addingTodo, setAddingTodo] = useState<boolean>(false);
@@ -48,9 +50,21 @@ function TodoForm() {
       }}
       className="flex flex-row gap-2"
     >
-      <input type="text" placeholder="Title" value={formState.title} onChange={(e) => formDispatch({ type: "SET_TITLE", payload: e.target.value })} disabled={addingTodo} />
-      <input type="text" placeholder="Description" value={formState.description} onChange={(e) => formDispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })} disabled={addingTodo} />
-      <input type="submit" value="Add Todo" />
+      <TextInput
+        type="text"
+        placeholder="Title"
+        value={formState.title}
+        onChange={(value) => formDispatch({ type: "SET_TITLE", payload: value })}
+        disabled={addingTodo}
+      />
+      <TextInput
+        type="text"
+        placeholder="Description"
+        value={formState.description || ""}
+        onChange={(value) => formDispatch({ type: "SET_DESCRIPTION", payload: value })}
+        disabled={addingTodo}
+      />
+      <Button type="submit" label="Add Todo" busy={addingTodo} />
     </form>
   )
 }

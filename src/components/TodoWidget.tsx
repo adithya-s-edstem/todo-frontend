@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Todo } from "../types";
 import Loader from "./Loader";
 import { useDeleteTodoMutation, useUpdateTodoMutation } from "../services/todoApi";
+import Button from "./Button";
 
 type TodoProps = {
   todo: Todo
@@ -15,13 +16,10 @@ function TodoWidget({ todo }: TodoProps) {
   const [updateTodo] = useUpdateTodoMutation();
 
   async function handleDelete(id: number): Promise<void> {
-    setIsDeleting(true);
     try {
       await deleteTodo(id).unwrap();
     } catch (error) {
       console.error("Delete failed:", error);
-    } finally {
-      setIsDeleting(false);
     }
   }
 
@@ -37,8 +35,7 @@ function TodoWidget({ todo }: TodoProps) {
   }
 
   return (
-    <div className="flex flex-col gap-1 border items-center p-2 rounded-md">
-
+    <div className="flex flex-col gap-1 border-1 items-center p-2 rounded-md hover:shadow-xl transition">
       <div className="border font-mono p-1 flex flex-col gap-1">
         <span>id: {todo.id}</span>
         <span>title: {todo.title}</span>
@@ -46,18 +43,25 @@ function TodoWidget({ todo }: TodoProps) {
         <span>description: {todo.description}</span>
         <span>completed: {todo.completed?.toString()}</span>
       </div>
-      {isUpdating ? (
-        <Loader />
-      ) : (
-        <input type="checkbox" checked={todo.completed} readOnly onClick={() => handleUpdateTodo(todo.id, { completed: !todo.completed })} />
-      )}
-      <button
-        type="button"
-        onClick={() => handleDelete(todo.id)}
-        disabled={isDeleting}
-      >
-        {isDeleting ? "Deleting..." : "Delete"}
-      </button>
+      <div className="flex justify-between items-center w-full">
+        {isUpdating ? (
+          <Loader />
+        ) : (
+          <input type="checkbox" checked={todo.completed} readOnly onClick={() => handleUpdateTodo(todo.id, { completed: !todo.completed })} />
+        )}
+        {isDeleting ? (
+          <div className="flex items-center gap-2">
+            <Button type="button" onClick={() => handleDelete(todo.id)} label="Yes" red />
+            <Button type="button" onClick={() => setIsDeleting(false)} label="No" />
+          </div>
+        ) : (
+          <Button
+            type="button"
+            onClick={() => setIsDeleting(true)}
+            label="Delete"
+          />
+        )}
+      </div>
     </div>
   )
 }
