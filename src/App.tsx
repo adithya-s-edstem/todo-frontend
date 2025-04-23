@@ -1,13 +1,39 @@
-import { useState } from "react";
-import { useDeleteTodoMutation, useGetAllTodosQuery } from "./services/todoApi";
+import { useReducer, useState } from "react";
+import { useAddTodoMutation, useDeleteTodoMutation, useGetAllTodosQuery, useUpdateTodoMutation } from "./services/todoApi";
+import { FormAction, FormState, Todo } from "./types";
 
 function App() {
-
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [addingTodo, setAddingTodo] = useState<boolean>(false);
 
-  const { data, isLoading, isFetching } = useGetAllTodosQuery();
+  function formReducer(state: FormState, action: FormAction) {
+    switch (action.type) {
+      case 'SET_TITLE': {
+        return {
+          ...state,
+          title: action.payload
+        }
+      }
+      case 'SET_DESCRIPTION': {
+        return {
+          ...state,
+          description: action.payload
+        }
+      }
+    }
+  }
+
+  const [formState, formDispatch] = useReducer(formReducer, { title: "", description: "" })
+
+  const { data, isLoading } = useGetAllTodosQuery();
 
   const [deleteTodo] = useDeleteTodoMutation();
+  const [updateTodo] = useUpdateTodoMutation();
+  const [
+    addTodo,
+    // { isSuccess }
+  ] = useAddTodoMutation()
 
   async function handleDelete(id: number) {
     setDeletingId(id);
@@ -20,24 +46,68 @@ function App() {
     }
   }
 
+  async function handleUpdateTodo(id: number, data: Partial<Todo>) {
+    setUpdatingId(id);
+    try {
+      await updateTodo({ id, data }).unwrap()
+    } catch (error) {
+      console.error("Update failed:", error);
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  async function handleAddTodo() {
+    setAddingTodo(true)
+    try {
+      await addTodo(formState)
+    } catch (error) {
+      console.error("Failed to add todo: ", error)
+    } finally {
+      // if (isSuccess) {
+      //   formDispatch({ type: "SET_TITLE", payload: '' })
+      //   formDispatch({ type: "SET_DESCRIPTION", payload: '' })
+      // }
+      setAddingTodo(false)
+    }
+  }
+
+  const Loader = () => <div className="w-6 h-6 border-t border-r animate-spin rounded-full" />
+
   return (
-    <div className="flex flex-col gap-2">
-      {isLoading && "Loading.."}
-      {isFetching && "Updating.."}
-      {data?.map(todo => (
-        <div key={todo.id} className="flex flex-col gap-1 border max-w-1/5">
-          <h3>{`${todo.id}, ${todo.title}`}</h3>
-          <p>{todo.description || "No description"}</p>
-          <input type="checkbox" checked={todo.completed} readOnly />
-          <button
-            type="button"
-            onClick={() => handleDelete(todo.id)}
-            disabled={deletingId === todo.id}
-          >
-            {deletingId === todo.id ? "Deleting..." : "Delete"}
-          </button>
-        </div>
-      ))}
+    <div className="flex flex-col gap-4">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleAddTodo()
+        }}
+        className="flex flex-row gap-2"
+      >
+        <input type="text" placeholder="Title" value={formState.title} onChange={(e) => formDispatch({ type: "SET_TITLE", payload: e.target.value })} disabled={addingTodo} />
+        <input type="text" placeholder="Description" value={formState.description} onChange={(e) => formDispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })} disabled={addingTodo} />
+        <input type="submit" value="Add Todo" />
+      </form>
+      <div className="flex flex-col gap-2">
+        {isLoading && "Loading.."}
+        {data?.map(todo => (
+          <div key={todo.id} className="flex flex-col gap-1 border max-w-1/5 items-center">
+            <h3>{`${todo.id}, ${todo.title}`}</h3>
+            <p>{todo.description || "No description"}</p>
+            {updatingId === todo.id ? (
+              <Loader />
+            ) : (
+              <input type="checkbox" checked={todo.completed} readOnly onClick={() => handleUpdateTodo(todo.id, { completed: !todo.completed })} />
+            )}
+            <button
+              type="button"
+              onClick={() => handleDelete(todo.id)}
+              disabled={deletingId === todo.id}
+            >
+              {deletingId === todo.id ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
