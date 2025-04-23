@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 import { FormAction, FormState } from "../types";
 import { useAddTodoMutation } from "../services/todoApi";
 import Button from "./Button";
@@ -6,8 +6,6 @@ import TextInput from "./TextInput";
 import TextArea from "./TextArea";
 
 function TodoForm() {
-  const [addingTodo, setAddingTodo] = useState<boolean>(false);
-
   function formReducer(state: FormState, action: FormAction) {
     switch (action.type) {
       case 'SET_TITLE': {
@@ -27,10 +25,9 @@ function TodoForm() {
 
   const [formState, formDispatch] = useReducer(formReducer, { title: "", description: "" })
 
-  const [addTodo, { isSuccess }] = useAddTodoMutation();
+  const [addTodo, { isLoading, isSuccess }] = useAddTodoMutation();
 
   async function handleAddTodo() {
-    setAddingTodo(true)
     try {
       await addTodo(formState).unwrap()
     } catch (error) {
@@ -40,7 +37,6 @@ function TodoForm() {
         formDispatch({ type: "SET_TITLE", payload: '' })
         formDispatch({ type: "SET_DESCRIPTION", payload: '' })
       }
-      setAddingTodo(false)
     }
   }
   return (
@@ -49,21 +45,23 @@ function TodoForm() {
         e.preventDefault()
         handleAddTodo()
       }}
-      className="flex flex-col gap-2 w-1/3"
+      className="flex flex-col gap-3 w-1/3 shadow rounded-md p-4"
     >
       <TextInput
         placeholder="Title"
         value={formState.title}
         onChange={(value) => formDispatch({ type: "SET_TITLE", payload: value })}
-        disabled={addingTodo}
+        disabled={isLoading}
+        label="Title"
       />
       <TextArea
         placeholder="Description"
         value={formState.description || ""}
         onChange={(value) => formDispatch({ type: "SET_DESCRIPTION", payload: value })}
-        disabled={addingTodo}
+        disabled={isLoading}
+        label="Description"
       />
-      <Button type="submit" label="Add Todo" busy={addingTodo} />
+      <Button type="submit" label="Add Todo" busy={isLoading} />
     </form>
   )
 }
