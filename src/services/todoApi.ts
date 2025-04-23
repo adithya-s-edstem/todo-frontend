@@ -25,7 +25,7 @@ export const todoApi = createApi({
             'getAllTodos',
             undefined,
             (draft) => {
-              draft.push({ ...newTodo, id: tempId })
+              draft.unshift({ ...newTodo, id: tempId })
             }
           )
         )
@@ -40,7 +40,7 @@ export const todoApi = createApi({
                 if (index !== -1) {
                   draft[index] = addedTodo
                 } else {
-                  draft.push(addedTodo)
+                  draft.unshift(addedTodo)
                 }
               }
             )
