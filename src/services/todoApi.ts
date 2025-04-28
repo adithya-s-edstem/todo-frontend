@@ -53,7 +53,8 @@ export const todoApi = createApi({
         } catch {
           patchResult.undo()
         }
-      }
+      },
+      invalidatesTags: ['Todos']
     }),
     deleteTodo: build.mutation({
       query: (id: number) => ({
@@ -78,7 +79,8 @@ export const todoApi = createApi({
         } catch {
           patchResult.undo();
         }
-      }
+      },
+      invalidatesTags: ['Todos']
     }),
     updateTodo: build.mutation({
       query: ({ id, data }: UpdateTodoTypes) => ({
@@ -104,7 +106,8 @@ export const todoApi = createApi({
         } catch {
           patchResult.undo();
         }
-      }
+      },
+      invalidatesTags: ['Todos']
     }),
     deleteAllTodos: build.mutation<Todo[], undefined>({
       query: () => ({
@@ -126,7 +129,8 @@ export const todoApi = createApi({
         } catch {
           patchResult.undo();
         }
-      }
+      },
+      invalidatesTags: ['Todos']
     })
   })
 })
