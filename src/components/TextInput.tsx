@@ -1,4 +1,4 @@
-type TextInputProps = {
+interface TextInputProps {
   value: string
   onChange: (string: string) => void
   placeholder: string
@@ -13,7 +13,7 @@ function TextInput({ value, onChange, placeholder, disabled, label }: TextInputP
       <input
         type="text"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => { onChange(e.target.value); }}
         placeholder={placeholder}
         className={`border border-gray-300 shadow h-10 rounded-md p-4 focus:outline-blue-300 ${disabled ? "bg-gray-100 text-gray-500 select-none" : ""}`}
         disabled={disabled}

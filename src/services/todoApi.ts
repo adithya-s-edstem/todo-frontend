@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Todo } from "../types";
+import { FormState, Todo } from "../types";
+
+interface UpdateTodoTypes {
+  id: number,
+  data: Partial<Todo>
+}
 
 export const todoApi = createApi({
   reducerPath: 'todoApi',
@@ -8,12 +13,12 @@ export const todoApi = createApi({
   }),
   tagTypes: ['Todos'],
   endpoints: (build) => ({
-    getAllTodos: build.query<Todo[], void>({
+    getAllTodos: build.query<Todo[], undefined>({
       query: () => '/',
       providesTags: ['Todos']
     }),
-    addTodo: build.mutation({
-      query: (data) => ({
+    addTodo: build.mutation<Todo, FormState>({
+      query: (data: FormState) => ({
         url: '/add',
         method: 'POST',
         body: data
@@ -25,7 +30,7 @@ export const todoApi = createApi({
             'getAllTodos',
             undefined,
             (draft) => {
-              draft.unshift({ ...newTodo, id: tempId })
+              draft.unshift({ ...newTodo, id: tempId, completed: false, created_at: new Date().toISOString() })
             }
           )
         )
@@ -51,8 +56,8 @@ export const todoApi = createApi({
       }
     }),
     deleteTodo: build.mutation({
-      query: (id) => ({
-        url: `/delete/${id}`,
+      query: (id: number) => ({
+        url: `/delete/${id.toString()}`,
         method: 'DELETE'
       }),
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
@@ -76,8 +81,8 @@ export const todoApi = createApi({
       }
     }),
     updateTodo: build.mutation({
-      query: ({ id, data }) => ({
-        url: `/update/${id}`,
+      query: ({ id, data }: UpdateTodoTypes) => ({
+        url: `/update/${id.toString()}`,
         method: 'PUT',
         body: data
       }),
@@ -101,7 +106,7 @@ export const todoApi = createApi({
         }
       }
     }),
-    deleteAllTodos: build.mutation<void, void>({
+    deleteAllTodos: build.mutation<Todo[], undefined>({
       query: () => ({
         url: '/delete/all',
         method: 'DELETE'

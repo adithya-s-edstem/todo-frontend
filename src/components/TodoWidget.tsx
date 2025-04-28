@@ -5,7 +5,7 @@ import { useDeleteTodoMutation, useUpdateTodoMutation } from "../services/todoAp
 import Button from "./Button";
 import formatDate from "../utils/formatDate";
 
-type TodoProps = {
+interface TodoProps {
   todo: Todo
 }
 
@@ -42,23 +42,23 @@ function TodoWidget({ todo }: TodoProps) {
         <span>title: {todo.title}</span>
         <span>created_at: {formatDate(todo.created_at)}</span>
         <span>description: {todo.description}</span>
-        <span>completed: {todo.completed?.toString()}</span>
+        <span>completed: {todo.completed ? 'True' : 'False'}</span>
       </div>
       <div className="flex justify-between items-center w-full">
         {isUpdating ? (
           <Loader />
         ) : (
-          <input type="checkbox" checked={todo.completed} readOnly onClick={() => handleUpdateTodo(todo.id, { completed: !todo.completed })} />
+          <input type="checkbox" checked={todo.completed} readOnly onClick={() => void handleUpdateTodo(todo.id, { completed: !todo.completed })} />
         )}
         {isDeleting ? (
           <div className="flex items-center gap-2">
-            <Button type="button" onClick={() => handleDelete(todo.id)} label="Yes" red />
-            <Button type="button" onClick={() => setIsDeleting(false)} label="No" />
+            <Button type="button" onClick={() => void handleDelete(todo.id)} label="Yes" red />
+            <Button type="button" onClick={() => { setIsDeleting(false); }} label="No" />
           </div>
         ) : (
           <Button
             type="button"
-            onClick={() => setIsDeleting(true)}
+            onClick={() => { setIsDeleting(true); }}
             label="Delete"
           />
         )}

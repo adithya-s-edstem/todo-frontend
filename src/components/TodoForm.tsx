@@ -5,7 +5,7 @@ import Button from "./Button";
 import TextInput from "./TextInput";
 import TextArea from "./TextArea";
 
-type TodoFormProps = {
+interface TodoFormProps {
   handleCancel: () => void
 }
 
@@ -31,7 +31,7 @@ function TodoForm({ handleCancel }: TodoFormProps) {
 
   const [addTodo, { isLoading, isSuccess }] = useAddTodoMutation();
 
-  async function handleAddTodo() {
+  async function handleAddTodo(): Promise<void> {
     try {
       await addTodo(formState).unwrap()
     } catch (error) {
@@ -47,21 +47,21 @@ function TodoForm({ handleCancel }: TodoFormProps) {
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        handleAddTodo()
+        void handleAddTodo()
       }}
       className="flex flex-col gap-3 w-1/3 shadow rounded-md p-4"
     >
       <TextInput
         placeholder="Title"
         value={formState.title}
-        onChange={(value) => formDispatch({ type: "SET_TITLE", payload: value })}
+        onChange={(value) => { formDispatch({ type: "SET_TITLE", payload: value }); }}
         disabled={isLoading}
         label="Title"
       />
       <TextArea
         placeholder="Description"
-        value={formState.description || ""}
-        onChange={(value) => formDispatch({ type: "SET_DESCRIPTION", payload: value })}
+        value={formState.description ?? ""}
+        onChange={(value) => { formDispatch({ type: "SET_DESCRIPTION", payload: value }); }}
         disabled={isLoading}
         label="Description"
       />
