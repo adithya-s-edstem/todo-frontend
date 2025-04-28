@@ -12,7 +12,7 @@ interface ButtonProps {
 function Button({ type, label, onClick, disabled, busy, red }: ButtonProps) {
   const redStyles = "bg-red-400 hover:bg-red-500 active:bg-red-600 text-white";
   const disabledStyles = "text-gray-500 bg-gray-200";
-  const regularStyles = "text-black bg-white";
+  const regularStyles = "text-black bg-white hover:bg-gray-100";
 
   return (
     <button

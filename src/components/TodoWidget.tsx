@@ -60,6 +60,7 @@ function TodoWidget({ todo }: TodoProps) {
             type="button"
             onClick={() => { setIsDeleting(true); }}
             label="Delete"
+            red
           />
         )}
       </div>

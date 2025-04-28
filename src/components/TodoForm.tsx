@@ -6,10 +6,10 @@ import TextInput from "./TextInput";
 import TextArea from "./TextArea";
 
 interface TodoFormProps {
-  handleCancel: () => void
+  handleClose: () => void
 }
 
-function TodoForm({ handleCancel }: TodoFormProps) {
+function TodoForm({ handleClose }: TodoFormProps) {
   function formReducer(state: FormState, action: FormAction) {
     switch (action.type) {
       case 'SET_TITLE': {
@@ -34,6 +34,7 @@ function TodoForm({ handleCancel }: TodoFormProps) {
   async function handleAddTodo(): Promise<void> {
     try {
       await addTodo(formState).unwrap()
+      handleClose()
     } catch (error) {
       console.error("Failed to add todo: ", error)
     } finally {
@@ -67,7 +68,7 @@ function TodoForm({ handleCancel }: TodoFormProps) {
       />
       <div className="flex items-center gap-4">
         <Button type="submit" label="Add Todo" busy={isLoading} />
-        <Button type="button" label="Cancel" onClick={handleCancel} red />
+        <Button type="button" label="Cancel" onClick={handleClose} red />
       </div>
     </form>
   )
