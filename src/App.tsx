@@ -28,7 +28,7 @@ function App() {
           ? <TodoForm handleCancel={() => { setAddingTodo(false); }} />
           : <Button type="button" label="New Todo" onClick={() => { setAddingTodo(true); }} />
         }
-        <Button type="button" label="Delete All" onClick={void handleDeleteAll} disabled={deleteAllDisabled} busy={isDeleting} red />
+        <Button type="button" label="Delete All" onClick={() => { void handleDeleteAll(); }} disabled={deleteAllDisabled} busy={isDeleting} red />
       </div>
       <div className="grid grid-cols-4 gap-4">
         {isLoading && "Loading.."}
